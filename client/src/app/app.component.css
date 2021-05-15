@@ -1,0 +1,19 @@
+.container{
+    width: 90%;
+    padding: 10px 0px;
+    margin: 0 auto;
+    border: 1px solid red;
+}
+.center{
+
+    padding: 10px;
+}
+.example-card{
+    width:9%;
+    min-width: 120px;
+    display: inline-block;
+    margin: 4px;
+}
+.mt10{
+    margin-top: 10px;
+}
