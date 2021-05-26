@@ -33,7 +33,7 @@
                 <img mat-card-image [src]="item.img" [alt]="item.title">
             </a>
             <mat-card-content>
-                <p style="text-align:center;white-space:nowrap;">
+                <p style="text-align:center;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
                     <a [href]="item.href" target="_blank" [title]="item.title">{{item.title}}</a>
                 </p>
                 
@@ -43,7 +43,7 @@
                         <span *ngIf="item.isFinish">[完]</span>
                     </a>
                 </p>
-                <p style="text-align:center;">
+                <p style="text-align:center;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
                     <a [href]="item.auth_href" target="_blank" [title]="item.auth">{{item.auth}}</a>
                 </p>
             </mat-card-content>
