@@ -28,7 +28,7 @@ userDao.search = function (param, res) {
 
     var _query = { "title": { '$regex': param.name, '$options': 'i' } };
 
-    var table = param.type;
+    var table = 'manhua';
 
     async.waterfall([
         // 连接数据库        
@@ -73,7 +73,7 @@ userDao.page = function (param, res) {
 
     var page_cur =Number(param.curPage) || 1;
 
-    var table = param.type;
+    var table = 'manhua';
 
     async.waterfall([
         // 连接数据库        

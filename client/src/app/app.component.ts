@@ -29,7 +29,7 @@ export class AppComponent {
     this.getHttp();
   }
   // page nav
-  pageChange(cur){
+  pageChange(cur) {
     this.param.curPage = cur;
     this.getHttp();
   }
@@ -43,14 +43,16 @@ export class AppComponent {
       if (res.success) {
         if (res.data.length > 0) {
           this.list = res.data;
-          if (this.param.type == "dmzj") {
-            // alert();
-            for (let i in this.list) {
-              let item = this.list[i];
 
+
+          for (let i in this.list) {
+            let item = this.list[i];
+            if (item.img.indexOf('images.dmzj.com') != -1) {
               item.img = "/api/img?url=" + item.img;
             }
+
           }
+
         } else {
           this.list = [];
         }
@@ -58,7 +60,7 @@ export class AppComponent {
     });
   }
 
-  
+
   // source change
   typeChange(data) {
     console.log(data);
@@ -87,14 +89,16 @@ export class AppComponent {
           this.param.id = this.list[this.list.length - 1]['_id'];
         }
 
-        if (this.param.type == "dmzj") {
-          // alert();
-          for (let i in this.list) {
-            let item = this.list[i];
 
+        // alert();
+        for (let i in this.list) {
+          let item = this.list[i];
+          if (item.img.indexOf('images.dmzj.com') != -1) {
             item.img = "/api/img?url=" + item.img;
           }
+
         }
+
 
       } else {
         this.list = [];
