@@ -8,9 +8,8 @@ var response = require('./response');
 
 const Url = "mongodb://localhost:27017/manhua";
 
-const table = 'dmzj';
+const table = 'manhua';
 
-const table2 = '1kkk';
 
 
 
@@ -25,10 +24,26 @@ var userDao = {};
  * @param {*} res 
  */
 userDao.search = function (param, res) {
+    var _query = {};
 
-    var _query = { "title": { '$regex': param.name, '$options': 'i' } };
+    if (param.name) {
+        _query.title = { '$regex': param.name, '$options': 'i' } ;
 
-    var table = 'manhua';
+    } 
+    // // isFinish
+    // if (param.isFinish && param.isFinish!=='') {
+        
+    //     _query.isFinish = (param.isFinish == 'true') ? true : false;
+    // }
+
+    // // type
+    // if (param.type && param.type!=='null') {
+    //     _query.type = param.type == '""'?"":param.type;
+    // }
+
+    console.log(_query);
+
+
 
     async.waterfall([
         // 连接数据库        
@@ -59,21 +74,40 @@ userDao.search = function (param, res) {
  * @param {*} res 
  */
 userDao.page = function (param, res) {
-    var _query;
+    var _query = {};  
 
-    if(param.sort){
-        _query= { '_id': { '$gt': require('mongodb').ObjectId(param.id) } };
-    }else{
-        _query = {};
+    try{
+        param = JSON.parse(param);
+    }catch(e){}
+    console.log('--x-x-x-');
+    console.log(param);
+    // 
+    if (param.isFinish && param.isFinish!=='all') {
+        
+        _query.isFinish = !!JSON.parse(String(param.isFinish).toLowerCase());
+
+        console.log(_query.isFinish);
+    }
+    
+    
+    // type
+    
+    if (typeof(param.type) !=="undefined" && param.type!=='all') {
+        _query.type = param.type;
+    }
+    
+    // letter
+    if(param.char && param.char !==''){
+        _query.letter = param.char;
     }
 
-    var table = param.type || 'dmzj';
+    console.log('--------------');
+    console.log(_query);
 
-    var page_size =Number(param.size) || 10;
+    var page_size = Number(param.size) || 10;
 
-    var page_cur =Number(param.curPage) || 1;
+    var page_cur = Number(param.curPage) || 1;
 
-    var table = 'manhua';
 
     async.waterfall([
         // 连接数据库        
@@ -82,7 +116,7 @@ userDao.page = function (param, res) {
         },
         // 分页
         function (db, callback) {
-            driver.page(db, callback, table, _query,page_cur, page_size);
+            driver.page(db, callback, table, _query, page_cur, page_size);
         }],
         // result
         function (err, result) {
@@ -95,8 +129,6 @@ userDao.page = function (param, res) {
             res.json(result);
         }
     );
-
-
 
 };
 

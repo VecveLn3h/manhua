@@ -43,6 +43,19 @@ router.get('/search', (req, res) => {
     }
 
 });
+router.post('/search', (req, res) => {
+
+    console.log(req.body);
+    // res.json({success:true});
+
+    if (!req.body) {
+        response.error(res, 'error', 'user is null');
+    } else {
+
+        userDao.search(req.body, res);
+    }
+
+});
 
 // pages
 router.get('/page', (req, res) => {
@@ -51,14 +64,26 @@ router.get('/page', (req, res) => {
     // res.json({success:true});
 
     if (!req.query) {
-        response.error(res, 'error', 'user is null');
+        response.error(res, 'error', 'param is null');
     } else {
 
         userDao.page(req.query, res);
     }
 
 });
+router.post('/page', (req, res) => {
 
+    console.log(req.body);
+    // res.json({success:true});
+
+    if (!req.body) {
+        response.error(res, 'error', 'param is null');
+    } else {
+
+        userDao.page(req.body, res);
+    }
+
+});
 
 
 module.exports = router;

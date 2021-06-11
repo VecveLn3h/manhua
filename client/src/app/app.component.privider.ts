@@ -9,7 +9,7 @@ export class AppComponentProvider{
     constructor(private http:Http){}
 
     get(param){
-        return this.http.get('/api/page',{search:param});
+        return this.http.post('/api/page',param);
     }
 
     search(param){

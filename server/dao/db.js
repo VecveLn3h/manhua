@@ -115,8 +115,6 @@ driver.page2 = function (db, callback, table, query, page_size) {
 driver.page = function (db, callback, table, query, page_cur, page_size) {
 
     var count = (page_cur - 1) * page_size;
-    var totalNum;
-    console.log(totalNum+"-------");
     db.collection(table).find(query).skip(count).limit(page_size).toArray(function (err, result) {
         var res;
         var error;
@@ -125,39 +123,23 @@ driver.page = function (db, callback, table, query, page_cur, page_size) {
         if (err) {
             error = { success: false, error: '查询异常', msg: '查询异常' };
         } else {
-            if (totalNum) {
+
+            db.collection(table).find(query).count(function (err, total) {
+
                 res = {
                     success: true,
                     data: result,
                     page: {
-                        totalCount: totalNum,
-                        pages: Math.ceil(totalNum / page_size),
+                        totalCount: total,
+                        pages: Math.ceil(total / page_size),
                         curPage: page_cur
                     }
                 };
-    
+
                 db.close();
-    
+
                 callback(error, res);
-            } else {
-                db.collection(table).count(function (err, total) {
-                    totalNum = total;
-
-                    res = {
-                        success: true,
-                        data: result,
-                        page: {
-                            totalCount: total,
-                            pages: Math.ceil(total / page_size),
-                            curPage: 1
-                        }
-                    };
-
-                    db.close();
-
-                    callback(error, res);
-                });
-            }
+            });
 
 
             // res = {

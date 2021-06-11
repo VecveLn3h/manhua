@@ -13,8 +13,7 @@ export class AppComponent {
   param: any = {
     size: 20,
     curPage: 1,
-    id: '',
-    type: '1kkk'
+    id: ''
   };
   name: string;
 
@@ -23,22 +22,73 @@ export class AppComponent {
     pages: 1000,
     totalCount: 10000
   };
+
+  finishs = [
+    {
+      text: '全部',
+      value: 'all'
+    }, {
+      text: '连载中', value: false
+    }, { text: '已完结', value: true }];
+
+  types = [
+    { text: '全部', value: 'all' }, { text: '少年热血', value: '少年热血' }, { text: '武侠格斗', value: '武侠格斗' }, { text: '少女爱情', value: '少女爱情' }, { text: '运动竞技', value: '运动竞技' }, { text: '科幻魔幻', value: '科幻魔幻' }, { text: '幽默爆笑', value: '幽默爆笑' }, { text: '侦探推理', value: '侦探推理' }, { text: '东方同人', value: '东方同人' }, { text: '少年漫画', value: '少年漫画' }, { text: '少女漫画', value: '少女漫画' }, { text: '青年漫画', value: '青年漫画' }, { text: '女青漫画', value: '女青漫画' }, { text: '其他', value: '' }
+  ];
+
+  charets = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0-9'];
+
+  classActive = {
+    type: 'all',
+    isFinish: 'all',
+    char: ''
+  };
+
   constructor(private service: AppComponentProvider) { }
 
   ngOnInit() {
-    this.getHttp();
+    this.getHttp(this.param);
   }
   // page nav
   pageChange(cur) {
     this.param.curPage = cur;
-    this.getHttp();
+    var obj = Object.assign({}, this.store);
+    var c =Object.assign(obj, this.param);
+
+    console.log(this.store);
+    this.getHttp(c);
+
+
   }
 
   // search
   ajax2: Subscription
   submit() {
-    this.ajax2 = this.service.search({ name: this.name, type: this.param.type }).subscribe((res: any) => {
-      res = res.json();
+    this.searchHttp({ name: this.name });
+  }
+
+  // search
+  store: any = {};
+  search(type, value) {
+    let obj: any = {};
+
+    if (type) {
+      obj[type] = value;
+
+      this.classActive[type] = value;
+    }
+    var c = Object.assign(this.store, obj);
+    
+    c = Object.assign(c, this.param);
+    console.log(this.store);
+    console.log(c);
+    this.getHttp(c);
+  }
+
+  // http
+  searchAjax: Subscription;
+  searchHttp(param) {
+    this.searchAjax = this.service.search(param).subscribe((res: any) => {
+      // res = res.json();
 
       if (res.success) {
         if (res.data.length > 0) {
@@ -59,23 +109,12 @@ export class AppComponent {
       }
     });
   }
-
-
-  // source change
-  typeChange(data) {
-    console.log(data);
-    console.log(this.param.type);
-
-    this.param.id = '';
-    this.getHttp();
-  }
-
   ajax: Subscription;
-  getHttp() {
-    this.ajax = this.service.get(this.param).subscribe((res: any) => {
+  getHttp(param) {
+    this.ajax = this.service.get(param).subscribe((res: any) => {
       console.log(res);
 
-      res = res.json();
+      // res = res.json();
 
       console.log(res);
 
@@ -84,11 +123,6 @@ export class AppComponent {
         this.list = res.data;
 
         this.page = res.page;
-
-        if (this.list.length > 0) {
-          this.param.id = this.list[this.list.length - 1]['_id'];
-        }
-
 
         // alert();
         for (let i in this.list) {
@@ -109,6 +143,10 @@ export class AppComponent {
   ngOnDestroy() {
     if (this.ajax) {
       this.ajax.unsubscribe();
+    }
+
+    if (this.searchAjax) {
+      this.searchAjax.unsubscribe();
     }
   }
 
